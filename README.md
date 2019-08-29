@@ -1,0 +1,2 @@
+# NOTE
+my every not 
