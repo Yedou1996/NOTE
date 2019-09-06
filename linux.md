@@ -135,7 +135,7 @@ tar -zxvf a.tar.gz -C /opt/temp        指定解压目录 -C要有
 ## 2019.8.14
 
 - ```
-  	组管理：
+  组管理：
   chown tom 1.txt                      把文件1.txt的所有者改为tom
   chgrep police 2.txt                  把文件2.txt的所有组改为police
   usermod -g 用户组 用户名              修改用户的用户组
@@ -145,6 +145,7 @@ tar -zxvf a.tar.gz -C /opt/temp        指定解压目录 -C要有
   rws对文件                             w不代表可以删除该文件，前提是该文件所在的目录有写权限
   chmod a+r                             给所有用户加读权限
   chown -R  tom /home                   把目录下的所有问价包括目录所有者改为tom 
+  chown -R mysql:mysql /usr/local/mysql
   	
   	
   	定时任务调度crond：     -e 编辑           -l显示            -r删除
@@ -232,6 +233,10 @@ yum  -y update  确保yum包更新到最新
 
 ```
 	服务管理：
+firewall-cmd --zone=public --add-port=5672/tcp --permanent       # 开放5672端口
+firewall-cmd --zone=public --remove-port=5672/tcp --permanent    # 关闭5672端口
+firewall-cmd --reload                                            # 配置立即生效
+firewall-cmd --zone=public --list-ports                          查看防火墙所有开放的端口
 systemctl status firewalld                             查看防火墙细节
 firewall-cmd --state                                   查看防火墙
 systemctl stop firewalld                               关闭防火墙
@@ -249,7 +254,10 @@ yum install net-tools                                  ifconfig无效
 
 top -d 10                                              动态监控进程10秒刷新一次
 netstat -anp | more                                    查看所有的网络服务
-netstat -anp | grep sshd                               查看特点服务
+netstat -anp | grep sshd                               查看特定服务
+netstat -lnpt                                          查看监听的端口
+netstat -lnpt |grep 5672                               检查端口被哪个进程占用
+
 
 	rpm，yum
 rpm -qa | grep *                                      	查看是否安装*rpm包
@@ -265,6 +273,228 @@ rpm -ivh                                                i:安装，v:提示，h�
 ## 2019.8.29——javaEE
 
 ```
+	 JDK配置环境变量：
+ vi  /etc/profile       
+export JAVA_HOME=jdk路径
+export PATH=$PATH:$JAVA_HOME/bin
+source  /etc/profile
+javac hellow.java 编译  java hello 运行
+	
+```
 
+## 2019.9.3——mysql
+
+```
+默认安装路径： /usr/local/mysql
+
+```
+
+## shell编程
+
+```
+命令行解释器
+第一个shell案例：
+	1.创建一个.sh文件。
+	2.编辑   #！/bin/bash 
+			echo "hello world"
+	3.给文件添加可执行权限755
+	4.执行文件 ./
+	
+
+shell变量：
+	系统变量：$PATH 、$USER 
+	自定义变量：a=100   
+			  echo "a=$a"
+               unset a          清除变量
+               echo "a=$a"
+    静态变量：readonly a    不能被unset
+    
+	date=`date`         将date命令返回的结果赋值给date
+	echo "date=$date"
+	
+	：<<!     !              多行注释
+	
+	
+位置参数变量:                   
+		#!/bin/bash
+		echo "$0 $1 $2"
+		echo "$*"
+		echo "$@"
+		echo "参数个数=$#"
+	执行./positionPass 20 10
+		./positionPare.sh 20 10
+			20 10
+			20 10
+			参数个数=2	
+	
+	
+预定义变量：
+		#!/bin/bash
+	echo "当前的进程号:$$"   
+	#后台的方式运行 shell 
+	./shell.sh &                                   
+	echo "最后的进程的进程号=$!"
+	echo "执行的值=$?"
+	
+	
+运算符：
+          #!/bin/bash
+          #第一种方式
+          result1=$(((2+3)*4))
+          echo "result1=$result1"
+          #第二种方式
+          result2=$[(2+3)*4]
+          echo "result2=$result2"
+          #第三种方式
+          TEmp=`expr 2 + 3`
+          result3=`expr $TEmp \* 4`
+          echo "result3=$result3"
+          #求出两个参数的和
+          SUM=$[$1+$2]
+          echo "sum=$SUM"
+          
+判断语句：
+		#!/bin/bash
+         #案例一：“ok”是否等于“ok”
+         if [ "ok"="ok" ]
+         then
+                 echo "true"
+         fi
+         #案例二：23是否大于等于22
+         
+         if [ 23 -gt 22 ]
+         then
+                 echo "大于"
+         fi
+         #案例三：/home/LXL/a.txt 文件是否存在
+         if [ -e /home/LXL/a.txt ]
+         then
+                 echo "存在"
+          fi
+    
+    
+   流程控制输入数字大于等于60显示及格，小于显示不及格：
+   		#!/bin/bash
+        if [ $1 -ge 60 ]
+        then
+                echo "及格了"
+        elif [ $1 -lt 60 ]
+        then
+                echo "不及格"
+        fi
+
+
+流程控制语句case输入参数1，显示周一，输入参数2显示周二，输入其他显示other：
+         #!/bin/bash
+         case $1 in
+         "1")
+         echo "周一"
+         ;;
+         "2")
+         echo "周二"
+         ;;
+         *)
+         echo "other"
+         ;;
+         esac
+         
+     
+打印命令行输入的参数：
+	#!/bin/bash
+    #使用 $*
+    for i in "$*"
+    do
+            echo "the num is $i"
+    done
+    echo "--------------------"
+    #使用$@
+    for j in "$@"
+    do
+            echo "the num is $j"
+    done
+    
+    
+控制台输入n，计算输出1+2+...n的和  
+     #!/bin/bash
+     SUM=0
+     i=0
+     while [ $i -le $1 ]
+     do
+             SUM=$[$SUM + $i]
+             i=$[$i + 1]
+     done
+     echo "sum=$SUM"
+     
+
+
+读取控制台输入
+      #!/bin/bash
+      read -p "请输入一个值num1=" NUM1    read -t 10 -p     等待时间10秒
+      echo "你输入的值是num1=$NUM1"
+
+
+系统函数
+	basename /home/aaa/test.txt        返回test.txt
+	basename /home/aaa/test.txt .txt   返回test   
+	可以写到shell脚本中
+	dirname /home/aaa/test.txt         返回/home/aaa
+	
+
+自定义函数：控制台输入两个数求和
+	#!/bin/bash
+     function getSum(){
+     
+             SUM=$[$n1+$n2]
+             echo "两数的和是=$SUM"
+     
+     }
+     read -p "请输入第一个数n1:" n1
+     read -p "强输入第二个数n2:" n2
+     #调用函数
+     getSum $n1 $n2
+     
+     
+ 
+ shell综合案例：
+ 	需求
+ 		1.每天凌晨2:10备份数据库 atguigu 到 /date/backup/db
+ 		2.备份开始和备份结束能够给出相应的提示信息
+ 		3.备份后的文件要求以时间为文件名，并打包成.tar.gz的形式，比如2019-09-06_1996.tar.gz             
+ 		4.在备份的同时，检查是否有10天前备份的数据库文件，如果有就删除
+        
+#!/bin/bash
+#完成数据库的定时备份
+#备份的路径
+BACKUP=/date/backup/db
+#当前的时间作为文件名
+DATETIME=$(date +%Y_%m_%d_%H:%M:%S)
+#可以输出变量调试
+echo "$DATETIME"
+echo "------------开始备份---------------"
+echo "备份的路径是 $BACKUP/$DATETIME.tar.gz"
+#主机
+HOST=localhost
+#用户名
+DB_USER=root
+#密码
+DB_PWD=root
+#备份数据库名
+DATABASE=atguiguDB
+#创建备份路径
+#如果备份的路径文件夹存在，就使用，否则就创建
+[ ! -d "$BACKIP/DATETIME" ] && mkdir -p "$BACKUP/$DATETIME"
+#执行mysql的备份数据库指令
+mysqldump -u$DB_USER -p$DB_PWD --host=$HOST $DATABASE | gzip > $BACKUP/$DATETIME/$DATETIME.sql.gz
+#打包备份文件
+cd $BACKUP
+tar -zcvf $DATETIME.tar.gz $DATETIME
+#删除临时目录
+rm -rf $BACKUP/$DATETIME
+#删除10天前的备份文件
+find $BACKUP -mtime +10 -name ".tar.gz" -exec rm -rf {} \;
+echo "------备份文件成功-------"
+
+接着：crontab -e 编辑内容为 10 2 * * * /usr/sbin/mysql_backup_db.sh
+	
 ```
 
