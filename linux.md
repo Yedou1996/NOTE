@@ -216,6 +216,7 @@ kill  4010                                   杀死某个进程
 killall gedit                                把归属于gedit的进程全部杀死
 kill -9 4090                                 强制终止
 pstree -p                                    以树状的形式展示进程id
+lsof -i:50                                   查看50端口占用
 
 	
 

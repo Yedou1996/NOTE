@@ -26,14 +26,17 @@
 
      
 
-     pianyuan.la  	   片源网
+     pianyuan.la  	  		 片源网
 
-     aigei.com              一些短音效
+     aigei.com            		    一些短音效
 
-     盒子部落       	软件
+     盒子部落       			  软件
 
-     土豪漫画            摆渡一下（音乐）
+     土豪漫画（漫画）                   摆渡一下（音乐）
 
-     看剧社（在线看） 动漫网（动漫）
+     看剧社（在线看）    
+
+     动漫网（动漫）[http://www.nicotv.me](http://www.nicotv.me/)
 
      
+
