@@ -127,6 +127,7 @@ unzip -d /opt/tmp mypackage.zip        解压并指定解压目录
 tar -zcvf a.tar.gz a1.txt a2.txt       打包并压缩a1.txt和a2.txt文件为a.tar.gz
 tar -zxvf a.tar.gz                     解压
 tar -zxvf a.tar.gz -C /opt/temp        指定解压目录 -C要有
+tar -xvf MySQL-5.6.45-1.el7.x86_64.rpm-bundle.tar      解压mysql
 
 	
 
@@ -203,6 +204,8 @@ du -ach --max-depth=1 /opt            opt目录的磁盘占用情况，深度为
 ls -l /home | grep "^-" | wc -l       统计home目录下的文件个数
 ls -lR /home | grep "^-" | wc -l      递归统计文件个数
 find / -name '*.iso'                  查找所有的镜像文件
+
+	添加
 	
 	网络配置：
 vi /etc/sysconfig/network-scripts/
@@ -212,6 +215,7 @@ ps -aux | more                               查看进程
 ps -aux | grep sshd                          查看某个进程
 ps -ef | more                                查看父进程
 ps -ef | grep sshd                           查看某个进程的父进程
+ps -ef | grep mysql                          查看mysql是否运行
 kill  4010                                   杀死某个进程
 killall gedit                                把归属于gedit的进程全部杀死
 kill -9 4090                                 强制终止
